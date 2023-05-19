@@ -1,0 +1,42 @@
+name: Deploy
+run-name: ${{ github.actor }} - test deploy
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project directory
+        uses: actions/checkout@v3
+      - name: Create dummy artifacts
+        run: |
+          mkdir dist
+          mkdir dist/dist
+          echo "hello" >> dist/dist/test.txt
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dummy-artifacts
+          retention-days: 1
+          path: dist
+
+  deploy-job:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: linode
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dummy-artifacts
+      - name: checkout dir
+        run: |
+          ls -lah
+      - name: Copy folder content recursively to remote
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: dist
+          remote: /var/www/architecture-map
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USER }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRV_KEY}}
