@@ -7,15 +7,22 @@ jobs:
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
-      - name: Create dummy artifacts
+      - name: Use Node.js 16.16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.16
+      - name: Build the app
         run: |
-          mkdir dist
-          mkdir dist/dist
-          echo "hello" >> dist/dist/test.txt
+          ls -ahl
+          npm i
+          npm run build
+          mkdir dist 
+          mv .svelte-kit dist 
+          ls -ahl
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: dummy-artifacts
+          name: artifacts
           retention-days: 1
           path: dist
 
@@ -27,16 +34,17 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v3
         with:
-          name: dummy-artifacts
+          name: artifacts
       - name: checkout dir
         run: |
           ls -lah
       - name: Copy folder content recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: dist
+          local: .svelte-kit
           remote: /var/www/architecture-map
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}
           password: ${{ secrets.HOST_PASSWORD }}
           privateKey: ${{ secrets.SSH_PRV_KEY}}
+          rmRemote: true
