@@ -17,7 +17,11 @@ jobs:
           npm i
           npm run build
           mkdir dist 
-          mv .svelte-kit dist 
+          mv build dist 
+          mv package.json dist/package.json
+          mv package-lock.json dist/package-lock.json
+          cd dist
+          npm ci --omit dev
           ls -ahl
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -35,13 +39,17 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: artifacts
-      - name: checkout dir
+      - name: move all to one folder
         run: |
-          ls -lah
+          mkdir dist
+          mv node_modules  dist/node_modules
+          mv build dist/build
+          mv package.json dist/package.json
+          mv package-lock.json dist/package-lock.json
       - name: Copy folder content recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: .svelte-kit
+          local: dist
           remote: /var/www/architecture-map
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}
