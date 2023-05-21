@@ -7,15 +7,26 @@ jobs:
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
-      - name: Create dummy artifacts
+      - name: Use Node.js 16.16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.16
+      - name: Build the app
         run: |
-          mkdir dist
-          mkdir dist/dist
-          echo "hello" >> dist/dist/test.txt
+          ls -ahl
+          npm i
+          npm run build
+          mkdir dist 
+          mv build dist 
+          mv package.json dist/package.json
+          mv package-lock.json dist/package-lock.json
+          cd dist
+          npm ci --omit dev
+          ls -ahl
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: dummy-artifacts
+          name: artifacts
           retention-days: 1
           path: dist
 
@@ -27,10 +38,14 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v3
         with:
-          name: dummy-artifacts
-      - name: checkout dir
+          name: artifacts
+      - name: move all to one folder
         run: |
-          ls -lah
+          mkdir dist
+          mv node_modules  dist/node_modules
+          mv build dist/build
+          mv package.json dist/package.json
+          mv package-lock.json dist/package-lock.json
       - name: Copy folder content recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
@@ -40,3 +55,4 @@ jobs:
           username: ${{ secrets.HOST_USER }}
           password: ${{ secrets.HOST_PASSWORD }}
           privateKey: ${{ secrets.SSH_PRV_KEY}}
+          rmRemote: true
