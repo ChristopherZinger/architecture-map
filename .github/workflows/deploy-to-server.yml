@@ -13,7 +13,6 @@ jobs:
           node-version: 16.16
       - name: Build the app
         run: |
-          ls -ahl
           npm i
           npm run build
           mkdir dist 
@@ -22,6 +21,7 @@ jobs:
           mv package-lock.json dist/package-lock.json
           cd dist
           npm ci --omit dev
+          npx prisma generate
           ls -ahl
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -42,7 +42,7 @@ jobs:
       - name: move all to one folder
         run: |
           mkdir dist
-          mv node_modules  dist/node_modules
+          cp -r node_modules/.  dist/node_modules
           mv build dist/build
           mv package.json dist/package.json
           mv package-lock.json dist/package-lock.json
