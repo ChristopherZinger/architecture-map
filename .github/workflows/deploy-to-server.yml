@@ -1,58 +1,121 @@
 name: Deploy
-run-name: ${{ github.actor }} - test deploy
-on: [push]
+run-name: Deploy to Staging
+on:
+  push:
+    branches:
+      - master
+      - release
 jobs:
-  build:
+  build-webapp-docker-image-and-opublish-to-docker-hub:
     runs-on: ubuntu-latest
+    environment: dockerhub
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.USER}}
+          password: ${{ secrets.TOKEN}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Use Node.js 16.16
         uses: actions/setup-node@v3
         with:
           node-version: 16.16
+
       - name: Build the app
         run: |
-          ls -ahl
           npm i
           npm run build
-          mkdir dist 
-          mv build dist 
-          mv package.json dist/package.json
-          mv package-lock.json dist/package-lock.json
-          cd dist
-          npm ci --omit dev
-          ls -ahl
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          retention-days: 1
-          path: dist
 
-  deploy-job:
-    needs: build
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.USER }}/architecture-map:latest
+
+  deploy-docker-compose:
+    needs: build-webapp-docker-image-and-opublish-to-docker-hub
     runs-on: ubuntu-latest
     environment: linode
     steps:
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: artifacts
-      - name: move all to one folder
-        run: |
-          mkdir dist
-          mv node_modules  dist/node_modules
-          mv build dist/build
-          mv package.json dist/package.json
-          mv package-lock.json dist/package-lock.json
-      - name: Copy folder content recursively to remote
+      - name: Checkout project directory
+        uses: actions/checkout@v3
+
+      - name: Copy app recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: dist
-          remote: /var/www/architecture-map
+          local: docker-compose.yml
+          remote: /var/www/architecture-map/docker-compose.yml
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}
           password: ${{ secrets.HOST_PASSWORD }}
           privateKey: ${{ secrets.SSH_PRV_KEY}}
-          rmRemote: true
+          rmRemote: true # this does not remove .env and its fine
+
+  update-webapp-image-on-server:
+    needs: [deploy-docker-compose, build-webapp-docker-image-and-opublish-to-docker-hub]
+    runs-on: ubuntu-latest
+    environment: linode
+    steps:
+      - name: Update Webapp Image
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /var/www/architecture-map
+            ls -lah
+            docker login
+            docker compose down
+            docker image rm chriswebdev1/architecture-map
+            docker pull chriswebdev1/architecture-map
+            docker compose up -d
+            exit
+          host: ${{ secrets.HOST_IP }}
+          user: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_PRV_KEY }}
+          pass: ${{ secrets.HOST_PASSWORD }}
+          args: '-tt -vvv'
+
+  run-migrations:
+    needs:
+      [
+        deploy-docker-compose,
+        build-webapp-docker-image-and-opublish-to-docker-hub,
+        update-webapp-image-on-server
+      ]
+    runs-on: ubuntu-latest
+    environment: linode
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+    steps:
+      - name: Checkout project directory
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16.16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.16
+
+      - name: Build the app
+        run: |
+          npm i
+          npx prisma generate
+          npm run build
+
+      - name: Check for new migrations
+        run: |
+          git log -n 1 --oneline -- prisma/migrations/ >> diff.txt
+          DIFF=$(wc -l < diff.txt)
+          if test $DIFF -gt 0
+            then
+              echo "New Migrations Detected."
+              npx prisma migrate deploy
+            else 
+              echo "There are NO new migrations. Skipping."
+            fi

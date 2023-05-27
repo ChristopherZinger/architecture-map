@@ -1,7 +1,16 @@
 version: '3.8'
 services:
+  webapp:
+    image: chriswebdev1/architecture-map:latest
+    restart: always
+    container_name: architecture-map-webapp
+    environment:
+      - 'DB_URL=${DB_URL}'
+    ports:
+      - '3000:3000'
+
   db:
-    image: postgres:14.1-alpine
+    image: postgres:15.3-alpine3.18
     restart: always
     container_name: architecture-map-db
     hostname: ${DB_HOST}
