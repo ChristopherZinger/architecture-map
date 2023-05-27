@@ -1,7 +1,6 @@
 import { prisma } from '$lib/prisma/prisma-client.js';
 import z from 'zod';
 import bcrypt from 'bcrypt';
-import { Role } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { env } from '$env/dynamic/private';
 import { fail } from '@sveltejs/kit';
@@ -28,27 +27,21 @@ export const actions = {
 
 		const parsedData = parseResult.data;
 
-		const salt = bcrypt.genSaltSync(10);
-		const hash = bcrypt.hashSync(parsedData.password, salt);
-
-		const userExists = await prisma.user.findFirst({
+		const user = await prisma.user.findFirst({
 			where: {
 				email: parsedData.email
 			}
 		});
 
-		if (userExists) {
-			return fail(400, { error: 'User with this email already exists' });
+		if (!user) {
+			return fail(400, { error: "User with this email doesn't exists" });
 		}
 
-		const user = await prisma.user.create({
-			data: {
-				email: parsedData.email,
-				password: hash,
-				role: Role.USER
-				// TODO name: / ! generate username
-			}
-		});
+		const isPasswordCorrect = bcrypt.compareSync(parsedData.password, user.password);
+
+		if (!isPasswordCorrect) {
+			return fail(400, { error: 'Incorrect password.' });
+		}
 
 		var token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, env.JWT_KEY, {
 			expiresIn: '365 days'
