@@ -2,9 +2,8 @@ import { prisma } from '$lib/prisma/prisma-client.js';
 import z from 'zod';
 import bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
-import jwt from 'jsonwebtoken';
-import { env } from '$env/dynamic/private';
 import { fail } from '@sveltejs/kit';
+import { authBearer, signJWT } from '$lib/server/utils/auth.js';
 
 export const actions = {
 	default: async ({ request, cookies }) => {
@@ -50,11 +49,9 @@ export const actions = {
 			}
 		});
 
-		var token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, env.JWT_KEY, {
-			expiresIn: '365 days'
-		});
+		var token = signJWT(user);
 
-		cookies.set('AuthorizationToken', `Bearer ${token}`, {
+		cookies.set(authBearer, `Bearer ${token}`, {
 			httpOnly: true,
 			path: '/',
 			secure: true,
