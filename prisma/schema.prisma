@@ -17,5 +17,6 @@ model User {
   updatedAt DateTime    @default(now())
   email     String      @unique
   name      String?
+  password  String      @default("testpass")
   role      Role        @default(USER)
 }
