@@ -9,6 +9,8 @@ jobs:
   build-webapp-docker-image-and-opublish-to-docker-hub:
     runs-on: ubuntu-latest
     environment: dockerhub
+    env:
+      JWT_KEY: ${{ secrets.JWT_KEY  }}
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
