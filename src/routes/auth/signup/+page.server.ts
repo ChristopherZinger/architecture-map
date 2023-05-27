@@ -2,14 +2,8 @@ import { prisma } from '$lib/prisma/prisma-client.js';
 import z from 'zod';
 import bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { authBearer, signJWT } from '$lib/server/utils/auth.js';
-
-export const load = ({ locals }) => {
-	if (locals.user) {
-		throw redirect(307, '/');
-	}
-};
 
 export const actions = {
 	default: async ({ request, cookies }) => {
@@ -65,6 +59,6 @@ export const actions = {
 			maxAge: 60 * 60 * 24 * 365 // 1 year
 		});
 
-		return { status: 'success' };
+		return { status: 'success', user };
 	}
 };
