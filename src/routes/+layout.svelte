@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../app.css';
 	import { appUser } from '$lib/stores/appUser.js';
 
 	export let data;
