@@ -8,9 +8,10 @@ on:
 jobs:
   build-webapp-docker-image-and-opublish-to-docker-hub:
     runs-on: ubuntu-latest
-    environment: dockerhub
+    environment: linode
     env:
       JWT_KEY: ${{ secrets.JWT_KEY  }}
+      HOST: ${{ secrets.HOST_IP }}
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
@@ -18,8 +19,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.USER}}
-          password: ${{ secrets.TOKEN}}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -28,6 +29,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.16
+
+      - name: Create .env file
+        run: echo ORIGIN=http://$HOST >> .env
 
       - name: Build the app
         run: |
@@ -40,7 +44,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.USER }}/architecture-map:latest
+          tags: ${{ secrets.DOCKER_USER }}/architecture-map:latest
 
   deploy-docker-compose:
     needs: build-webapp-docker-image-and-opublish-to-docker-hub

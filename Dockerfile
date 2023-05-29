@@ -10,6 +10,8 @@ COPY ./package.json /home/webapp
 
 COPY ./package-lock.json /home/webapp
 
+COPY ./.env /home/webapp/.env
+
 COPY ./prisma/schema.prisma /home/webapp/schema.prisma
 
 COPY ./run-webapp-in-docker.sh /home/webapp/run.sh
@@ -20,4 +22,4 @@ RUN npm ci --production
 
 RUN npx prisma generate
 
-CMD ["sh", "/home/webapp/run.sh"]
+CMD ["pm2-runtime", "npm run serve"]
