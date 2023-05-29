@@ -31,7 +31,9 @@ jobs:
           node-version: 16.16
 
       - name: Create .env file
-        run: echo ORIGIN=http://$HOST >> .env
+        run: |
+          echo ORIGIN=http://$HOST >> .env
+          echo JWT_KEY=$JWT_KEY >> .env
 
       - name: Build the app
         run: |
