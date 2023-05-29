@@ -50,15 +50,15 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USER }}/architecture-map:latest
 
-  deploy-docker-compose:
-    needs: build-webapp-docker-image-and-opublish-to-docker-hub
+  update-webapp-image-on-server:
+    needs: [build-webapp-docker-image-and-opublish-to-docker-hub]
     runs-on: ubuntu-latest
     environment: linode
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
 
-      - name: Copy app recursively to remote
+      - name: Copy docker-compose.yml to remote
         uses: garygrossgarten/github-action-scp@release
         with:
           local: docker-compose.yml
@@ -69,12 +69,7 @@ jobs:
           privateKey: ${{ secrets.SSH_PRV_KEY}}
           rmRemote: true # this does not remove .env and its fine
 
-  update-webapp-image-on-server:
-    needs: [deploy-docker-compose, build-webapp-docker-image-and-opublish-to-docker-hub]
-    runs-on: ubuntu-latest
-    environment: linode
-    steps:
-      - name: Update Webapp Image
+      - name: Update webapp image on remote server
         uses: fifsky/ssh-action@master
         with:
           command: |
@@ -92,12 +87,7 @@ jobs:
           args: '-tt -vvv'
 
   run-migrations:
-    needs:
-      [
-        deploy-docker-compose,
-        build-webapp-docker-image-and-opublish-to-docker-hub,
-        update-webapp-image-on-server
-      ]
+    needs: [build-webapp-docker-image-and-opublish-to-docker-hub, update-webapp-image-on-server]
     runs-on: ubuntu-latest
     environment: linode
     env:
