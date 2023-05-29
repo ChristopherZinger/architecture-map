@@ -1,5 +1,5 @@
 name: Deploy
-run-name: Deploy to Staging
+run-name: Deploy staging
 on:
   push:
     branches:
@@ -12,6 +12,7 @@ jobs:
     env:
       JWT_KEY: ${{ secrets.JWT_KEY  }}
       HOST: ${{ secrets.HOST_IP }}
+      PRISMA_CLIENT_DB_URL: ${{ secrets.PRISMA_CLIENT_DB_URL }}
     steps:
       - name: Checkout project directory
         uses: actions/checkout@v3
@@ -34,6 +35,7 @@ jobs:
         run: |
           echo ORIGIN=http://$HOST >> .env
           echo JWT_KEY=$JWT_KEY >> .env
+          echo DB_URL=$PRISMA_CLIENT_DB_URL >> .env
 
       - name: Build the app
         run: |

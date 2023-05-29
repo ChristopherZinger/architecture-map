@@ -14,8 +14,6 @@ COPY ./.env /home/webapp/.env
 
 COPY ./prisma/schema.prisma /home/webapp/schema.prisma
 
-COPY ./run-webapp-in-docker.sh /home/webapp/run.sh
-
 WORKDIR /home/webapp
 
 RUN npm ci --production
