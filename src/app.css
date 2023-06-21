@@ -6,3 +6,11 @@
 * {
 	font-family: 'Manrope', sans-serif;
 }
+
+.container {
+	flex-grow: 1;
+	padding-left: 16px;
+	padding-right: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
