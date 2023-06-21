@@ -3,6 +3,9 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import Button from '$lib/components/Button.svelte';
+	import AuthBox from '$lib/components/auth/AuthBox.svelte';
+	import TextInput from '$lib/components/inputs/TextInput.svelte';
 	import { appUser } from '$lib/stores/appUser';
 
 	$: if ($appUser && browser) {
@@ -15,24 +18,33 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Login</title>
+</svelte:head>
+
 {#if !$appUser}
-	<form method="POST" use:enhance>
-		<div>
-			<label for="email">Email</label>
-			<input type="email" name="email" id="email" />
-		</div>
+	<div class="container xl">
+		<AuthBox>
+			<h1 class="text-xl font-bold text-center md:text-left">Login</h1>
+			<form method="POST" use:enhance class="flex flex-col gap-14">
+				<TextInput name="email" labelText="Email:" placeholder="tom@hotmail.com" />
 
-		<div>
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" />
-		</div>
+				<TextInput name="password" labelText="Password:" type="password" placeholder="******" />
 
-		<button>submit</button>
+				<div class="mx-auto w-52 flex flex-col">
+					<Button type="submit">Login</Button>
+				</div>
 
-		{#if $page.form?.error}
-			<p>
-				{$page.form.error}
+				{#if $page.form?.error}
+					<p>
+						{$page.form.error}
+					</p>
+				{/if}
+			</form>
+			<p class="text-sm text-center">
+				<a class="font-semibold hover:underline" href="/auth/signup">Signup</a> if you don't have account
+				yet.
 			</p>
-		{/if}
-	</form>
+		</AuthBox>
+	</div>
 {/if}
