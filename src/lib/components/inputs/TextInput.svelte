@@ -7,6 +7,13 @@
 	export let required: boolean = false;
 	export let onEnter: (() => void) | undefined = undefined;
 	export let disabled: boolean = false;
+	export let type: 'text' | 'password' = 'text';
+
+	let node: HTMLInputElement | undefined;
+
+	$: if (node) {
+		node.type = type;
+	}
 </script>
 
 <div>
@@ -18,7 +25,7 @@
 		{/if}
 	</div>
 	<input
-		type="text"
+		bind:this={node}
 		{name}
 		bind:value
 		on:keyup={(e) => {
@@ -32,7 +39,7 @@
 		{disabled}
 		class={`
             focus:outline-none
-            p-3 w-full 
+            p-2 w-full 
             border-b-black border-b-2
         `}
 	/>
