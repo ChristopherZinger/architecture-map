@@ -9,6 +9,7 @@ generator client {
 
 enum Role {
     USER
+    ADMIN
 }
 
 enum ProposalStaus {
@@ -41,3 +42,145 @@ model Proposal {
   lat               Float
   lng               Float
 }
+
+model Project {
+  id                          Int         @id @default(autoincrement()) 
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  constructionYearStart       Int         @db.SmallInt
+  constructionYearEnd         Int         @db.SmallInt
+  displayName                 String      @db.VarChar(128)
+  slug                        String      @db.VarChar(128) @unique
+  lat                         Float       @db.DoublePrecision
+  lng                         Float       @db.DoublePrecision
+
+  location                    Location    @relation(fields: [locationId], references: [id])
+  locationId                  Int
+
+  tags                        Tag[]
+  functions                   ProjectFunction[]
+  styles                      ProjectStyle[]
+  authors                     Author[]
+  imgUrls                     ImgUrl[]
+  relatedInfoUrls             RelatedInfoUrl[]
+}
+
+model Location {
+  id                          Int         @id @default(autoincrement()) 
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  geohash5                    String      @db.VarChar(5)
+
+  project                     Project[]
+}
+
+model City {
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  displayName                 String      @db.VarChar(128)
+  slug                        String      @db.VarChar(64) @unique 
+
+  country                     Country     @relation(fields: [countryId], references: [id])
+  countryId                   Int         @unique
+
+  authors                     Author[]
+}
+
+model Country {
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  displayName                 String      @db.VarChar(64)
+  slug                        String      @db.VarChar(64) @unique
+  alpha2                      String      @db.VarChar(2)
+
+  cities                      City[]
+  authors                     Author[]
+}
+
+model Author {
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  fullName                    String      @db.VarChar(128)
+  aka                         String[]
+  birthDate                   DateTime    @db.Date
+  deathDate                   DateTime?   @db.Date
+  info                        String      @db.VarChar(4096)
+
+  birthCity                   City        @relation(fields: [birthCityId], references: [id])
+  birthCityId                 Int
+
+  birthCountry                Country     @relation(fields: [birthCountryId], references: [id])
+  birthCountryId              Int
+
+  projects                    Project[]
+}
+
+model Tag {
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  slug                        String      @db.VarChar(64) @unique
+  displayName                 String      @db.VarChar(64)
+
+  projects                    Project[]
+}
+
+model ProjectFunction{
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  slug                        String      @db.VarChar(64) @unique
+  displayName                 String      @db.VarChar(64)
+
+  projects                    Project[]
+}
+
+model ProjectStyle {
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  slug                        String      @db.VarChar(64) @unique
+  displayName                 String      @db.VarChar(64)
+
+  projects                    Project[]
+}
+
+
+enum ImgContent {
+  PHOTO
+  PLAN
+  ELEVATION
+  SECTION
+  AXONOMETRY
+  RENDER
+  COLLAGE
+  SKETCH
+  MODEL
+  OTHER
+}
+
+model ImgUrl{
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  url                         String       
+  content                     ImgContent
+
+  projects                    Project     @relation(fields: [projectId], references: [id])
+  projectId                   Int
+}
+
+model RelatedInfoUrl {
+  id                          Int         @id @default(autoincrement())
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  url                         String       
+
+  projects                    Project     @relation(fields: [projectId], references: [id])
+  projectId                   Int
+}
+
+
