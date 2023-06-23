@@ -106,7 +106,7 @@ model Author {
   aka                         String[]
   birthDate                   DateTime    @db.Date
   deathDate                   DateTime?   @db.Date
-  info                        String      @db.VarChar(4096)
+  info                        String      
 
   birthCity                   City        @relation(fields: [birthCityId], references: [id])
   birthCityId                 Int
