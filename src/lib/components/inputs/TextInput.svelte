@@ -8,6 +8,7 @@
 	export let onEnter: (() => void) | undefined = undefined;
 	export let disabled: boolean = false;
 	export let type: 'text' | 'password' = 'text';
+	export let maxLength: number | undefined = undefined;
 
 	let node: HTMLInputElement | undefined;
 
@@ -33,6 +34,7 @@
 				onEnter();
 			}
 		}}
+		maxlength={maxLength}
 		on:input={({ currentTarget: { value } }) => onChange && onChange(value)}
 		{placeholder}
 		{required}
