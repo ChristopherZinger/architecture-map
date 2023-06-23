@@ -92,8 +92,7 @@ model Country {
   createdAt                   DateTime    @default(now())
   updatedAt                   DateTime    @updatedAt
   displayName                 String      @db.VarChar(64)
-  slug                        String      @db.VarChar(64) @unique
-  alpha2                      String      @db.VarChar(2)
+  alpha2                      String      @db.VarChar(2) @unique
 
   cities                      City[]
   authors                     Author[]
