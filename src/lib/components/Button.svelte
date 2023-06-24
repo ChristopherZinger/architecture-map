@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let type: 'button' | 'submit' | null | 'reset' = 'submit';
-	export let onClick: (() => void) | undefined;
+	export let onClick: (() => void) | undefined = undefined;
 
 	function _handler() {
 		if (onClick) {
