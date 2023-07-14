@@ -2,7 +2,7 @@ import { Role } from '@prisma/client';
 import { error } from '@sveltejs/kit';
 import z from 'zod';
 import { prisma } from '$lib/prisma/prisma-client';
-import slugify from 'slugify';
+import { makeSlug } from '$lib/utils/slugify-utils.js';
 
 export const actions = {
 	createCity: async ({ request, locals }) => {
@@ -58,11 +58,7 @@ export const actions = {
 		await prisma.city.create({
 			data: {
 				displayName,
-				slug: slugify(slug, {
-					lower: true,
-					trim: true,
-					replacement: '-'
-				}),
+				slug: makeSlug(slug),
 				country: {
 					connect: country
 				}
