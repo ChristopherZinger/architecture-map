@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fetchCountries, type Country } from '../../routes/api/country/fetchCities';
+	import { fetchCountries, type CountryAPI } from '../../routes/api/country/fetchCountries';
 	import Button from './Button.svelte';
 	import CreateCityForm from './CreateCityForm.svelte';
 	import Modal from './Modal.svelte';
@@ -22,7 +22,7 @@
 		isMounted = true;
 	});
 
-	let countries: undefined | Country[];
+	let countries: undefined | CountryAPI[];
 
 	$: if (isMounted && isOpen) {
 		fetchCountries().then((r) => {
