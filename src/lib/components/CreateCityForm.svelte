@@ -4,6 +4,10 @@
 	import Button from './Button.svelte';
 	import SearchDropdown from './inputs/SearchDropdown.svelte';
 	import TextInput from './inputs/TextInput.svelte';
+	import CreateCountryModal from './CreateCountryModal.svelte';
+	import { fetchCountries } from '../../routes/api/country/fetchCountries';
+	import Fa from 'svelte-fa';
+	import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 	export let error: string | undefined = undefined;
 	export let success = false;
@@ -24,6 +28,8 @@
 		replacement: '-',
 		lower: true
 	});
+
+	let isCountryModalOpen = false;
 </script>
 
 <form
@@ -45,13 +51,26 @@
 	<TextInput name="slug" labelText="Slug" placeholder="new-york" bind:value={slug} />
 
 	<input type="text" hidden value={alpha2} name="alpha2" />
-	<SearchDropdown
-		items={countries.map((c) => ({
-			label: c.displayName,
-			value: c.alpha2
-		}))}
-		bind:value={dropdownValue}
-	/>
+	<div class="flex gap-5">
+		<div class="grow">
+			<SearchDropdown
+				items={countries.map((c) => ({
+					label: c.displayName,
+					value: c.alpha2
+				}))}
+				bind:value={dropdownValue}
+			/>
+		</div>
+
+		<button
+			type="button"
+			on:click={() => {
+				isCountryModalOpen = true;
+			}}
+		>
+			<Fa icon={faPlus} />
+		</button>
+	</div>
 
 	{#if error}
 		<p class="text-red-600 font-bold">{error}</p>
@@ -61,3 +80,13 @@
 		<Button>Submit</Button>
 	</div>
 </form>
+
+<CreateCountryModal
+	isOpen={isCountryModalOpen}
+	onClose={() => {
+		fetchCountries().then((r) => {
+			countries = r;
+		});
+		isCountryModalOpen = false;
+	}}
+/>
