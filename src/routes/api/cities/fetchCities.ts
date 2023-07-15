@@ -12,6 +12,6 @@ export const fetchCities = async (): Promise<CityAPI[]> => {
 	return cities;
 };
 
-export type CityAPI = Pick<City, 'displayName' | 'slug'> & {
+export type CityAPI = Pick<City, 'displayName' | 'id'> & {
 	country: Pick<Country, 'displayName'>;
 };
