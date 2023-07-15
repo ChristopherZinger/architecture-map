@@ -60,7 +60,7 @@ export const actions = {
 				displayName,
 				slug: makeSlug(slug),
 				country: {
-					connect: country
+					connect: { id: country.id }
 				}
 			}
 		});
