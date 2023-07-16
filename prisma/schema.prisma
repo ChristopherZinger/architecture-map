@@ -53,9 +53,8 @@ model Project {
   slug                        String      @db.VarChar(128) @unique
   lat                         Float       @db.DoublePrecision
   lng                         Float       @db.DoublePrecision
+  geohash5                    String      @db.VarChar(5) @unique
 
-  location                    Location    @relation(fields: [locationId], references: [id])
-  locationId                  Int
 
   tags                        Tag[]
   functions                   ProjectFunction[]
@@ -65,14 +64,6 @@ model Project {
   relatedInfoUrls             RelatedInfoUrl[]
 }
 
-model Location {
-  id                          Int         @id @default(autoincrement()) 
-  createdAt                   DateTime    @default(now())
-  updatedAt                   DateTime    @updatedAt
-  geohash5                    String      @db.VarChar(5) @unique
-
-  project                     Project[]
-}
 
 model City {
   id                          Int         @id @default(autoincrement())
