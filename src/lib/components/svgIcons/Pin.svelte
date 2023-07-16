@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let height = '18px';
-	export let color = '#CE8989';
+	export let color: string = '#464646';
 </script>
 
 <svg {height} viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg">

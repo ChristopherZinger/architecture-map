@@ -9,13 +9,15 @@
 
 	export let onMapReady: ((map: L.Map) => void) | undefined = undefined;
 
+	const mapInitialCenter: [number, number] = [48.93715850426397, 7.4551722494402135];
+
 	function initializeMap(mapComponent: HTMLElement) {
 		map = L.map(mapComponent);
 
 		if (onMapReady) {
 			onMapReady(map);
 		} else {
-			map.setView([11, 10], 5);
+			map.setView(mapInitialCenter, 5);
 		}
 	}
 
