@@ -47,8 +47,8 @@ model Project {
   id                          Int         @id @default(autoincrement()) 
   createdAt                   DateTime    @default(now())
   updatedAt                   DateTime    @updatedAt
-  constructionYearStart       Int         @db.SmallInt
-  constructionYearEnd         Int         @db.SmallInt
+  constructionYearStart       Int?        @db.SmallInt
+  constructionYearEnd         Int?        @db.SmallInt
   displayName                 String      @db.VarChar(128)
   slug                        String      @db.VarChar(128) @unique
   lat                         Float       @db.DoublePrecision
