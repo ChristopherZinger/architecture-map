@@ -53,7 +53,7 @@ model Project {
   slug                        String      @db.VarChar(128) @unique
   lat                         Float       @db.DoublePrecision
   lng                         Float       @db.DoublePrecision
-  geohash5                    String      @db.VarChar(5) @unique
+  geohash5                    String      @db.VarChar(5) 
 
 
   tags                        Tag[]
