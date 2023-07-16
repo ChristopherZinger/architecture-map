@@ -167,6 +167,7 @@ model ImgUrl{
   updatedAt                   DateTime    @updatedAt
   url                         String       
   content                     ImgContent
+  isPrimary                   Boolean     @default(false)
 
   projects                    Project     @relation(fields: [projectId], references: [id])
   projectId                   Int
