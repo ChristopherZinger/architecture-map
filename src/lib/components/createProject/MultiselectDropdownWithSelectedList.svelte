@@ -14,6 +14,7 @@
 	export let name: string;
 	export let label: string;
 	export let onModalOpen: () => void;
+	export let placeholder: string | undefined = undefined;
 </script>
 
 <LabelInputContainer>
@@ -25,6 +26,7 @@
 				onSelect={(item) => onSelect(item.value)}
 				items={options}
 				name={`${name}-dropdown`}
+				{placeholder}
 			/>
 		</div>
 		<button type="button" on:click={onModalOpen}>
@@ -35,5 +37,6 @@
 	<MultiselectTagList
 		onClick={(value) => onUnselect(value)}
 		selectedItems={options.filter(({ value }) => selectedValues.includes(value))}
+		{name}
 	/>
 </LabelInputContainer>
