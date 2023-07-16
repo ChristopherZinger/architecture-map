@@ -69,7 +69,7 @@ model Location {
   id                          Int         @id @default(autoincrement()) 
   createdAt                   DateTime    @default(now())
   updatedAt                   DateTime    @updatedAt
-  geohash5                    String      @db.VarChar(5)
+  geohash5                    String      @db.VarChar(5) @unique
 
   project                     Project[]
 }
