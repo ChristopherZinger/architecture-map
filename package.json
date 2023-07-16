@@ -48,6 +48,9 @@
 	"dependencies": {
 		"@fortawesome/free-solid-svg-icons": "^6.4.0",
 		"@prisma/client": "^4.16.1",
+		"@turf/bbox": "^6.5.0",
+		"@turf/clusters-kmeans": "^6.5.0",
+		"@turf/helpers": "^6.5.0",
 		"bcrypt": "^5.1.0",
 		"dotenv": "^16.0.3",
 		"jsonwebtoken": "^9.0.0",
