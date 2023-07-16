@@ -15,12 +15,12 @@
 	import CreateProjectFunctionModal from '../CreateProjectFunctionModal.svelte';
 	import CreateProjectStyleModal from '../CreateProjectStyleModal.svelte';
 	import CreateTagModal from '../CreateTagModal.svelte';
-	import { ImgContent } from '@prisma/client';
-	import Dropdown, { type DropdownValue } from '../inputs/Dropdown.svelte';
+	import Dropdown from '../inputs/Dropdown.svelte';
 	import { groupBy } from 'lodash';
 	import NumberInput from '../inputs/NumberInput.svelte';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { ImgContentAppEnum } from '$lib/utils/prisma-enums-utils';
 
 	type LabelValue = {
 		label: string;
@@ -61,12 +61,12 @@
 	let isProjectStyleModalOpen = false;
 	let isTagModalOpen = false;
 
-	let imgTypeInput: { value: ImgContent; label: ImgContent } | undefined;
+	let imgTypeInput: { value: string; label: string } | undefined;
 	let imgUrlInput = '';
 	let isImgPrimary = false;
 	let imgs: {
 		url: string;
-		type: ImgContent;
+		type: keyof typeof ImgContentAppEnum;
 		isPrimary: boolean;
 	}[] = [];
 	$: imgsStringified = JSON.stringify(imgs);
@@ -76,6 +76,10 @@
 			label: l,
 			value: v
 		};
+	}
+
+	function isImgContentAppEnum(i: unknown): i is keyof typeof ImgContentAppEnum {
+		return Object.keys(ImgContentAppEnum).includes(i as any);
 	}
 
 	onMount(async () => {
@@ -295,17 +299,14 @@
 		id="img-form"
 		class="flex flex-col gap-10"
 		on:submit|preventDefault={() => {
-			if (!imgTypeInput) {
-				console.error('missing img type');
-				return;
+			if (imgTypeInput && isImgContentAppEnum(imgTypeInput.value)) {
+				const data = {
+					url: imgUrlInput,
+					type: imgTypeInput?.value,
+					isPrimary: isImgPrimary
+				};
+				imgs = [...imgs, data];
 			}
-
-			const data = {
-				url: imgUrlInput,
-				type: imgTypeInput?.value,
-				isPrimary: isImgPrimary
-			};
-			imgs = [...imgs, data];
 		}}
 	>
 		<h2 class="font-semibold">Image</h2>
@@ -326,7 +327,7 @@
 				name="img-type"
 				slot="input"
 				bind:value={imgTypeInput}
-				items={Object.entries(ImgContent).map((i) => ({
+				items={Object.entries(ImgContentAppEnum).map((i) => ({
 					label: i[0],
 					value: i[1]
 				}))}
