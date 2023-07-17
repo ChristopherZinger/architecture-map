@@ -24,17 +24,17 @@
 		position: fixed;
 		top: 50%;
 		transform: translateY(-50%);
-		z-index: 1001;
+		z-index: 11;
 	}
 
 	.bg {
 		position: fixed;
-		width: 400px;
-		height: 400px;
+		width: 100vw;
+		height: 100vh;
 		top: 0;
 		left: 0;
-		z-index: 1000;
-		backdrop-filter: blur(1px);
+		z-index: 10;
+		backdrop-filter: blur(5px);
 		pointer-events: none;
 	}
 </style>

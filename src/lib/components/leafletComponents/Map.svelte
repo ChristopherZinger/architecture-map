@@ -38,7 +38,7 @@
 	/>
 </svelte:head>
 
-<div id="map" bind:this={mapComponent}>
+<div id="map" bind:this={mapComponent} style="z-index:0;">
 	{#if isReady}
 		<slot />
 	{/if}
