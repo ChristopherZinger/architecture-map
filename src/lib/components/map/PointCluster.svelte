@@ -11,12 +11,25 @@
 	import ClusterMarker from './ClusterMarker.svelte';
 	import bbox from '@turf/bbox';
 	import Marker from '../leafletComponents/Marker.svelte';
+	import type { ProjectAPI } from '../../../routes/api/projects/fetchProjects';
 
 	export let pointsFeatureCollection: FeatureCollection<Point>;
+	export let onClickOnMarker: (i: Feature<Point>) => void;
+	export let selectedFeature: null | ProjectAPI;
 
 	const map = getMap();
 	let zoom = map.getZoom();
 	const SHOW_ALL_POINTS_ZOOM_LEVEL = 16;
+
+	function getMarkerColor(selectedFeature: ProjectAPI | null, feature: Feature<Point>): string {
+		if (
+			selectedFeature?.lat === feature.geometry.coordinates[0] &&
+			selectedFeature?.lng === feature.geometry.coordinates[1]
+		) {
+			return 'coral';
+		}
+		return clusterColor;
+	}
 	const clusterColor = '#464646';
 
 	type ClusterWithPoints = {
@@ -104,7 +117,11 @@
 			{#each clusterPoints as point}
 				{@const [x, y] = point.geometry.coordinates}
 				{#if x && y}
-					<Marker latLng={[x, y]} color={clusterColor} />
+					<Marker
+						onClick={() => onClickOnMarker(point)}
+						latLng={[x, y]}
+						color={getMarkerColor(selectedFeature, point)}
+					/>
 				{/if}
 			{/each}
 		{/if}
@@ -113,7 +130,11 @@
 	{#each pointsInsideMapBbox as point}
 		{@const [x, y] = point.geometry.coordinates}
 		{#if x && y}
-			<Marker latLng={[x, y]} />
+			<Marker
+				latLng={[x, y]}
+				onClick={() => onClickOnMarker(point)}
+				color={getMarkerColor(selectedFeature, point)}
+			/>
 		{/if}
 	{/each}
 {/if}

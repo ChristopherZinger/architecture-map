@@ -18,6 +18,7 @@
 			onMapReady(map);
 		} else {
 			map.setView(mapInitialCenter, 5);
+			map.setMinZoom(3);
 		}
 	}
 
