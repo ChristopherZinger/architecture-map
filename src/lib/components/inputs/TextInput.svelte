@@ -5,7 +5,7 @@
 	export let labelText: string | undefined = undefined;
 	export let placeholder: string = '';
 	export let required: boolean = false;
-	export let onEnter: (() => void) | undefined = undefined;
+	export let onEnter: ((v: string) => void) | undefined = undefined;
 	export let disabled: boolean = false;
 	export let type: 'text' | 'password' = 'text';
 	export let maxLength: number | undefined = undefined;
@@ -31,7 +31,7 @@
 		bind:value
 		on:keyup={(e) => {
 			if (onEnter && e.key === 'Enter') {
-				onEnter();
+				onEnter(value);
 			}
 		}}
 		maxlength={maxLength}
