@@ -25,7 +25,8 @@ export const actions = {
 			projectFunctions: formData.getAll('project-function'),
 			projectStyles: formData.getAll('project-style'),
 			tags: formData.getAll('tag'),
-			imgsJson: formData.get('imgs-json')
+			imgsJson: formData.get('imgs-json'),
+			description: formData.get('description')
 		};
 
 		if (!rawData.lat || !rawData.lng || !rawData.imgsJson) {
@@ -45,6 +46,7 @@ export const actions = {
 				projectFunctionSlugs: z.array(z.string()),
 				projectStyleSlugs: z.array(z.string()),
 				tagSlugs: z.array(z.string()),
+				description: z.string().nullable(),
 				imgs: z.array(
 					z.object({
 						url: z.string(),
@@ -71,7 +73,8 @@ export const actions = {
 					type: img.type,
 					url: img.url,
 					isPrimary: Boolean(img.isPrimary)
-				}))
+				})),
+				description: rawData.description
 			});
 
 		if (!parseResult.success) {
@@ -114,7 +117,8 @@ export const actions = {
 							content: img.type,
 							isPrimary: img.isPrimary
 						}))
-					}
+					},
+					description: data.description
 				}
 			});
 		} catch (err) {

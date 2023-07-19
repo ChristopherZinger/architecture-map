@@ -21,9 +21,9 @@ export type ProjectAPI = Pick<
 	| 'geohash5'
 	| 'lat'
 	| 'lng'
-> &
-	Pick<ProjectFunction, 'slug' | 'displayName'>[] &
-	Pick<ProjectStyle, 'slug' | 'displayName'>[] &
-	Pick<Tag, 'slug' | 'displayName'>[] &
-	Pick<Author, 'id' | 'fullName'>[] &
-	Pick<ImgUrl, 'url' | 'content' | 'isPrimary'>[];
+	| 'description'
+> & { functions: Pick<ProjectFunction, 'slug' | 'displayName'>[] } & {
+	styles: Pick<ProjectStyle, 'slug' | 'displayName'>[];
+} & { tags: Pick<Tag, 'slug' | 'displayName'>[] } & {
+	authors: Pick<Author, 'id' | 'fullName'>[];
+} & { imgUrls: Pick<ImgUrl, 'url' | 'content' | 'isPrimary'>[] };

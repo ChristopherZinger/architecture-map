@@ -42,7 +42,8 @@ export const GET: RequestHandler = async function () {
 					url: true,
 					content: true
 				}
-			}
+			},
+			description: true
 		}
 	});
 

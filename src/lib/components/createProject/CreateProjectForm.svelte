@@ -189,6 +189,11 @@
 		/>
 	</LabelInputContainer>
 
+	<div class="flex flex-col gap-5">
+		<label for="description">Description:</label>
+		<textarea name="description" class="bg-gray-100 rounded p-5" placeholder="Info.." />
+	</div>
+
 	<MultiselectDropdownWithSelectedList
 		onModalOpen={() => {
 			isAuthorModalOpen = true;
