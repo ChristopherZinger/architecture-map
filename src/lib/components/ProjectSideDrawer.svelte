@@ -85,7 +85,7 @@
 	</ul>
 
 	<div class="flex flex-wrap gap-2">
-		{#each times(10, () => project.imgUrls[0]) as img}
+		{#each project.imgUrls as img}
 			<div class="flex-grow h-36">
 				<img src={img.url} alt={img.content} class="w-full h-full object-cover" loading="lazy" />
 			</div>
