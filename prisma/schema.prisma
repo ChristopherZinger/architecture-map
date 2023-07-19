@@ -54,6 +54,7 @@ model Project {
   lat                         Float       @db.DoublePrecision
   lng                         Float       @db.DoublePrecision
   geohash5                    String      @db.VarChar(5) 
+  description                 String?      
 
 
   tags                        Tag[]
