@@ -16,6 +16,12 @@
 		appUser.setUser($page.form.user);
 		goto('/');
 	}
+
+	$: if ($page.form && $page.form.status !== 'success') {
+		isLoading = false;
+	}
+
+	let isLoading = false;
 </script>
 
 <svelte:head>
@@ -26,13 +32,24 @@
 	<div class="container xl">
 		<AuthBox>
 			<h1 class="text-xl font-bold text-center md:text-left">Login</h1>
-			<form method="POST" use:enhance class="flex flex-col gap-14">
+			<form
+				method="POST"
+				on:submit={() => {
+					isLoading = true;
+				}}
+				use:enhance
+				class="flex flex-col gap-14"
+			>
 				<TextInput name="email" labelText="Email:" placeholder="tom@hotmail.com" />
 
 				<TextInput name="password" labelText="Password:" type="password" placeholder="******" />
 
 				<div class="mx-auto w-52 flex flex-col">
-					<Button type="submit">Login</Button>
+					{#if isLoading}
+						loading
+					{:else}
+						<Button type="submit">Login</Button>
+					{/if}
 				</div>
 
 				{#if $page.form?.error}
