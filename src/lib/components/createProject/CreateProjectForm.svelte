@@ -64,10 +64,12 @@
 	let imgTypeInput: { value: string; label: string } | undefined;
 	let imgUrlInput = '';
 	let isImgPrimary = false;
+	let imgCredits = '';
 	let imgs: {
 		url: string;
 		type: keyof typeof ImgContentAppEnum;
 		isPrimary: boolean;
+		imgCredits?: string;
 	}[] = [];
 	$: imgsStringified = JSON.stringify(imgs);
 
@@ -308,7 +310,8 @@
 				const data = {
 					url: imgUrlInput,
 					type: imgTypeInput?.value,
-					isPrimary: isImgPrimary
+					isPrimary: isImgPrimary,
+					imgCredits
 				};
 				imgs = [...imgs, data];
 			}
@@ -316,13 +319,23 @@
 	>
 		<h2 class="font-semibold">Image</h2>
 		<LabelInputContainer>
-			<label slot="label" for="url-input">Url:</label>
+			<label slot="label" for="img-input">Url:</label>
 			<TextInput
 				bind:value={imgUrlInput}
 				slot="input"
-				name="url-input"
+				name="img-input"
 				placeholder="https:// ..."
 				required
+			/>
+		</LabelInputContainer>
+
+		<LabelInputContainer>
+			<label slot="label" for="url-credits">Credits:</label>
+			<TextInput
+				bind:value={imgCredits}
+				slot="input"
+				name="img-credits"
+				placeholder="credits ..."
 			/>
 		</LabelInputContainer>
 

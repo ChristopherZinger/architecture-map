@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { times } from 'lodash';
 	import type { ProjectAPI } from '../../routes/api/projects/fetchProjects';
 	import { slide } from 'svelte/transition';
 	import Fa from 'svelte-fa';
@@ -44,6 +43,7 @@
 			alt={project.imgUrls[0].content}
 			class="w-full h-full object-cover"
 			loading="lazy"
+			title={project.imgUrls[0].credits || project.imgUrls[0].content}
 		/>
 	</div>
 	<h1 class="text-2xl">
@@ -87,7 +87,13 @@
 	<div class="flex flex-wrap gap-2">
 		{#each project.imgUrls as img}
 			<div class="flex-grow h-36">
-				<img src={img.url} alt={img.content} class="w-full h-full object-cover" loading="lazy" />
+				<img
+					src={img.url}
+					alt={img.content}
+					title={project.imgUrls[0].credits || project.imgUrls[0].content}
+					class="w-full h-full object-cover"
+					loading="lazy"
+				/>
 			</div>
 		{/each}
 	</div>

@@ -160,6 +160,7 @@ model ImgUrl{
   url                         String       
   content                     ImgContent
   isPrimary                   Boolean     @default(false)
+  credits                     String?
 
   projects                    Project     @relation(fields: [projectId], references: [id])
   projectId                   Int

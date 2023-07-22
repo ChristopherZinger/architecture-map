@@ -40,7 +40,8 @@ export const GET: RequestHandler = async function () {
 				select: {
 					isPrimary: true,
 					url: true,
-					content: true
+					content: true,
+					credits: true
 				}
 			},
 			description: true

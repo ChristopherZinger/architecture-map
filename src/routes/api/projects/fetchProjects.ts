@@ -26,4 +26,4 @@ export type ProjectAPI = Pick<
 	styles: Pick<ProjectStyle, 'slug' | 'displayName'>[];
 } & { tags: Pick<Tag, 'slug' | 'displayName'>[] } & {
 	authors: Pick<Author, 'id' | 'fullName'>[];
-} & { imgUrls: Pick<ImgUrl, 'url' | 'content' | 'isPrimary'>[] };
+} & { imgUrls: Pick<ImgUrl, 'url' | 'content' | 'credits' | 'isPrimary'>[] };

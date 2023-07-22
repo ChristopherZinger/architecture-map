@@ -26,7 +26,8 @@ export const actions = {
 			projectStyles: formData.getAll('project-style'),
 			tags: formData.getAll('tag'),
 			imgsJson: formData.get('imgs-json'),
-			description: formData.get('description')
+			description: formData.get('description'),
+			credits: formData.get('img-credits')
 		};
 
 		if (!rawData.lat || !rawData.lng || !rawData.imgsJson) {
@@ -51,7 +52,8 @@ export const actions = {
 					z.object({
 						url: z.string(),
 						type: z.nativeEnum(ImgContent),
-						isPrimary: z.boolean()
+						isPrimary: z.boolean(),
+						imgCredits: z.string().nullable()
 					})
 				)
 			})
@@ -72,7 +74,8 @@ export const actions = {
 				imgs: imgJson.map((img: any) => ({
 					type: img.type,
 					url: img.url,
-					isPrimary: Boolean(img.isPrimary)
+					isPrimary: Boolean(img.isPrimary),
+					imgCredits: img.imgCredits
 				})),
 				description: rawData.description
 			});
@@ -115,7 +118,8 @@ export const actions = {
 						create: data.imgs.map((img) => ({
 							url: img.url,
 							content: img.type,
-							isPrimary: img.isPrimary
+							isPrimary: img.isPrimary,
+							credits: img.imgCredits || null
 						}))
 					},
 					description: data.description
