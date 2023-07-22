@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Button from '$lib/components/Button.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 	import AuthBox from '$lib/components/auth/AuthBox.svelte';
 	import TextInput from '$lib/components/inputs/TextInput.svelte';
 	import { appUser } from '$lib/stores/appUser';
@@ -16,20 +17,39 @@
 		appUser.setUser($page.form.user);
 		goto('/');
 	}
+
+	$: if ($page.form && $page.form.status !== 'success') {
+		isLoading = false;
+	}
+
+	let isLoading = false;
 </script>
 
 {#if !$appUser}
 	<div class="container xl">
 		<AuthBox>
 			<h1 class="text-xl font-bold text-center md:text-left">Signup</h1>
-			<form method="POST" use:enhance class="flex flex-col gap-14">
+			<form
+				method="POST"
+				on:submit={() => {
+					isLoading = true;
+				}}
+				use:enhance
+				class="flex flex-col gap-14"
+			>
 				<TextInput name="email" labelText="Email:" placeholder="tom@hotmail.com" />
 
 				<TextInput name="password" labelText="Password:" type="password" placeholder="******" />
 
-				<div class="mx-auto w-52 flex flex-col">
-					<Button type="submit">Signup</Button>
-				</div>
+				{#if isLoading}
+					<div class="flex justify-center">
+						<Spinner />
+					</div>
+				{:else}
+					<div class="mx-auto w-52 flex flex-col">
+						<Button type="submit">Signup</Button>
+					</div>
+				{/if}
 
 				{#if $page.form?.error}
 					<p>

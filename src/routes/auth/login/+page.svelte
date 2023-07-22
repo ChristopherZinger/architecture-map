@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Button from '$lib/components/Button.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 	import AuthBox from '$lib/components/auth/AuthBox.svelte';
 	import TextInput from '$lib/components/inputs/TextInput.svelte';
 	import { appUser } from '$lib/stores/appUser';
@@ -44,13 +45,15 @@
 
 				<TextInput name="password" labelText="Password:" type="password" placeholder="******" />
 
-				<div class="mx-auto w-52 flex flex-col">
-					{#if isLoading}
-						loading
-					{:else}
+				{#if isLoading}
+					<div class="flex justify-center">
+						<Spinner />
+					</div>
+				{:else}
+					<div class="mx-auto w-52 flex flex-col">
 						<Button type="submit">Login</Button>
-					{/if}
-				</div>
+					</div>
+				{/if}
 
 				{#if $page.form?.error}
 					<p>
